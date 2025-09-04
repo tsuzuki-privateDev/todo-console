@@ -9,6 +9,7 @@ public class TodoApp {
         System.out.println("ToDo (分割版):");
         System.out.println(" add <内容>");
         System.out.println(" list | list todo | list done | list sort due | list sort prio");
+        System.out.println(" edit <番号> <タイトル>");
         System.out.println(" delete <番号> | done <番号> | undone <番号>");
         System.out.println(" setdue <番号> <YYYY-MM-DD> | cleardue <番号>");
         System.out.println(" setprio <番号> <LOW|MEDIUM|HIGH>");
@@ -27,10 +28,13 @@ public class TodoApp {
                     String name = trim.substring(4).trim();
                     svc.add(name);
                     System.out.println("追加: " + name);
-
                 } else if (trim.equals("list") || trim.startsWith("list ")) {
                     handleList(trim, svc);
-
+                } else if (trim.startsWith("edit ")) {
+                    String[] sp = trim.split("\\s+", 3);    // タイトルは空白が入ることがあり得るので、limitは3にする
+                    if (sp.length != 3) throw new IllegalArgumentException("使い方: edit <番号> <タイトル>");
+                    int n = Integer.parseInt(sp[1]);
+                    System.out.println("編集： " + n + " -> " + svc.edit(n, sp[2]).name);
                 } else if (trim.startsWith("delete ")) {
                     int n = Integer.parseInt(trim.substring(7).trim());
                     System.out.println("削除: " + svc.delete(n).name);

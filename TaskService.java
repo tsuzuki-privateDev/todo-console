@@ -24,9 +24,9 @@ public class TaskService {
     List<Task> listSortDue() {
         List<Task> v = listAll();
         v.sort(Comparator
-            .comparing((Task t) -> t.due == null)
+            .comparing((Task t) -> t.due == null)   // nullは後ろにする
             .thenComparing(t -> t.due, Comparator.nullsLast(Comparator.naturalOrder()))
-            .thenComparingInt(t -> t.priority.order));
+            .thenComparingInt(t -> t.priority.order));  // 同じ日なら優先度で並べる
         return v;
     }
     List<Task> listSortPrio() {
@@ -42,6 +42,14 @@ public class TaskService {
         if (name == null || name.trim().isEmpty()) throw new IllegalArgumentException("内容を入力してください。");
         tasks.add(new Task(name.trim()));
         repo.save(tasks);
+    }
+
+    Task edit(int oneBasedIndex, String newName) {
+        if (newName == null || newName.trim().isEmpty()) throw new IllegalArgumentException("更新内容を入力してください。");
+        Task t = tasks.get(index(oneBasedIndex));
+        t.name = newName.trim();
+        repo.save(tasks);
+        return t;
     }
 
     Task delete(int oneBasedIndex) {
@@ -82,7 +90,7 @@ public class TaskService {
         return status + " " + t.name + "  (due: " + due + ", prio: " + t.priority + ")";
     }
 
-    private int index(int oneBased) {
+    private int index(int oneBased) {   // 引数が範囲内かを見て、範囲内ならインデックスを返す
         if (oneBased < 1 || oneBased > tasks.size()) {
             throw new IllegalArgumentException("番号が範囲外です。1〜" + tasks.size());
         }
