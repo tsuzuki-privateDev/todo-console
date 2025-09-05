@@ -9,6 +9,7 @@ public class TodoApp {
         System.out.println("ToDo (分割版):");
         System.out.println(" add <内容>");
         System.out.println(" list | list todo | list done | list sort due | list sort prio");
+        System.out.println(" find <キーワード>");
         System.out.println(" edit <番号> <タイトル>");
         System.out.println(" delete <番号> | done <番号> | undone <番号>");
         System.out.println(" setdue <番号> <YYYY-MM-DD> | cleardue <番号>");
