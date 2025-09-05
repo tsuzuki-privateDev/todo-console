@@ -1,4 +1,5 @@
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -12,7 +13,10 @@ public class TaskRepository {
         File file = new File(FILE_NAME);
         if (!file.exists()) return tasks;
 
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+        try (BufferedReader br = new BufferedReader(
+            new InputStreamReader(
+                new FileInputStream(file),
+                StandardCharsets.UTF_8))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String raw = line.trim();
@@ -47,7 +51,11 @@ public class TaskRepository {
 
     void save(List<Task> tasks) {
         File file = new File(FILE_NAME);
-        try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file, false)))) {
+        try (PrintWriter pw = new PrintWriter(
+            new BufferedWriter(
+                new OutputStreamWriter(
+                    new FileOutputStream(file, false),
+                    StandardCharsets.UTF_8)))) {
             for (Task t : tasks) {
                 String status = t.done ? "[x]" : "[ ]";
                 String due = (t.due == null) ? "" : DF.format(t.due);
