@@ -28,13 +28,33 @@ public class TodoApp {
                     String name = trim.substring(4).trim();
                     svc.add(name);
                     System.out.println("追加: " + name);
+
                 } else if (trim.equals("list") || trim.startsWith("list ")) {
                     handleList(trim, svc);
+
+                } else if (trim.startsWith("find ")) {
+                    String[] sp = trim.split("\\s+", 2);   // 1個以上の空白で区切る
+                    if (sp.length != 2 || sp[1].isBlank()) throw new IllegalArgumentException("使い方: find <キーワード>");
+                    String kw = sp[1].toLowerCase();
+                    List<Task> all = svc.listAll();
+                    List<Task> hit = new ArrayList<>();
+                    for (Task t : all) {
+                        if (t.name.toLowerCase().contains(kw)) hit.add(t);
+                    }
+                    if (hit.isEmpty()) {
+                        System.out.println("(該当なし)");
+                    } else {
+                        for (int i = 0; i < hit.size(); i++) {
+                            System.out.println((i + 1) + ". " + TaskService.fmt(hit.get(i)));
+                        }
+                    }
+
                 } else if (trim.startsWith("edit ")) {
                     String[] sp = trim.split("\\s+", 3);    // タイトルは空白が入ることがあり得るので、limitは3にする
-                    if (sp.length != 3) throw new IllegalArgumentException("使い方: edit <番号> <タイトル>");
+                    if (sp.length != 3 || sp[2].isBlank()) throw new IllegalArgumentException("使い方: edit <番号> <タイトル>");
                     int n = Integer.parseInt(sp[1]);
                     System.out.println("編集： " + n + " -> " + svc.edit(n, sp[2]).name);
+
                 } else if (trim.startsWith("delete ")) {
                     int n = Integer.parseInt(trim.substring(7).trim());
                     System.out.println("削除: " + svc.delete(n).name);
